@@ -1,3 +1,3 @@
-# Backend Auth Clone - IGNITE REACT
+# Projeto Auth - IGNITE REACT
 
-Essa aplicação backend foi fornecida pelo bootcamp Ignite para trabalhar no front consumido-a!
+Aplicação para trabalhar com token JWT , tanto no backend como no Front End
