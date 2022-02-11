@@ -12,7 +12,7 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-const AuthContext = createContext({} as AuthContextData);
+export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const isAutenticated = false;
