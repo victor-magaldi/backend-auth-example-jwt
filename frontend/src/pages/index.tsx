@@ -6,7 +6,7 @@ import styles from "../styles/Home.module.css";
 const Home: NextPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {} = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -14,7 +14,7 @@ const Home: NextPage = () => {
       email,
       password,
     };
-    console.log("data", data);
+    signIn(data);
   }
   return (
     <form onSubmit={handleSubmit} className={styles.container}>
