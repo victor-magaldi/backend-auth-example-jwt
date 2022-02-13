@@ -13,6 +13,14 @@ cd backend
 ```
 
 ```bash
+npm install
+```
+
+```bash
+npm run dev
+```
+
+```bash
 cd backend
 ```
 
