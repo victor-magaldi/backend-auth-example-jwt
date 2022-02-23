@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Dashboard() {
-  return <h2>dashboard</h2>;
+  const { user } = useContext(AuthContext);
+
+  return <h2>{user?.email}</h2>;
 }

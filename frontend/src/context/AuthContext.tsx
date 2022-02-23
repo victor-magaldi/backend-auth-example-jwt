@@ -14,6 +14,7 @@ type SignInCredentials = {
 type AuthContextData = {
   signIn(crendentials: SignInCredentials): Promise<void>;
   isAutenticated: boolean;
+  user: User | undefined;
 };
 interface AuthProviderProps {
   children: ReactNode;
@@ -23,7 +24,7 @@ export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>();
-  const isAutenticated = false;
+  const isAutenticated = !!user;
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
@@ -32,7 +33,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         password,
       });
 
-      const { permissions, roles } = reponse.data;
+      const { token, refreshToken, permissions, roles } = reponse.data;
       setUser({
         email,
         permissions,
@@ -45,7 +46,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ signIn, isAutenticated }}>
+    <AuthContext.Provider value={{ signIn, isAutenticated, user }}>
       {children}
     </AuthContext.Provider>
   );
