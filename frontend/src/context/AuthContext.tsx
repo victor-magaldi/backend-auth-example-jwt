@@ -1,3 +1,4 @@
+import Router from "next/router";
 import React, { createContext, ReactNode, useState } from "react";
 import { api } from "../services/api";
 
@@ -25,7 +26,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAutenticated = false;
 
   async function signIn({ email, password }: SignInCredentials) {
-    console.log("entrou ", email, password);
     try {
       const reponse = await api.post("sessions", {
         email,
@@ -38,6 +38,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         permissions,
         roles,
       });
+      Router.push("/dashboard");
     } catch (e) {
       console.log("error: ", e);
     }
