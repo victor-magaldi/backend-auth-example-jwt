@@ -1,6 +1,11 @@
-import React, { createContext, FunctionComponent, ReactNode } from "react";
+import React, { createContext, ReactNode, useState } from "react";
 import { api } from "../services/api";
 
+type User = {
+  email: string;
+  permissions: string[];
+  roles: string[];
+};
 type SignInCredentials = {
   email: string;
   password: string;
@@ -16,6 +21,7 @@ interface AuthProviderProps {
 export const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<User>();
   const isAutenticated = false;
 
   async function signIn({ email, password }: SignInCredentials) {
@@ -25,7 +31,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         password,
       });
-      console.log("opa", reponse.data);
+
+      const { permissions, roles } = reponse.data;
+      setUser({
+        email,
+        permissions,
+        roles,
+      });
     } catch (e) {
       console.log("error: ", e);
     }
