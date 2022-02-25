@@ -6,7 +6,7 @@ Aplicação para trabalhar com token JWT , tanto no backend como no Front End
 
 Após clonar esse projeto rodar tanto o back-end como o front-end seguindo os passos abaixo
 
-## Back-ened
+## Back-end
 
 ```bash
 cd backend
