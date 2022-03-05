@@ -29,3 +29,20 @@ cd backend
 ```bash
 cd frontend
 ```
+
+## Tecnologias 🔥
+
+**Client:** , ,
+\
+Foram usados novos recursos do React como:
+
+- React + Typescript
+- hook useState, useEffect , context API
+- nookies (lib de cookies aprimorada para Next)
+
+**Server:**
+
+- NodeJS
+- express
+- jsonwebtoken
+- jwt-decode
