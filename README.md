@@ -1,8 +1,4 @@
-# Projeto Auth - IGNITE REACT
-
-Aplicação para trabalhar com token JWT , tanto no backend como no Front End
-
-# Instalação
+ya
 
 Após clonar esse projeto rodar tanto o back-end como o front-end seguindo os passos abaixo
 
@@ -46,3 +42,4 @@ Foram usados novos recursos do React como:
 - express
 - jsonwebtoken
 - jwt-decode
+- cors
