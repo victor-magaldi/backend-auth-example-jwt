@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { HeadersDefaults } from "axios";
 import { parseCookies } from "nookies";
 
 const { "nextauth.token": token } = parseCookies();

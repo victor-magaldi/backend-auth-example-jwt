@@ -2,7 +2,10 @@ import Router from "next/router";
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { api } from "../services/api";
 import { setCookie, parseCookies } from "nookies";
-
+import { HeadersDefaults } from "axios";
+interface CommonHeaderProperties extends HeadersDefaults {
+  Authorization: string;
+}
 type User = {
   email: string;
   permissions: string[];
@@ -30,8 +33,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const { "nextauth.token": token } = parseCookies();
     if (token) {
-      api.get("/me").then((r) => {
-        console.log("r", r);
+      api.get("/me").then((response) => {
+        const { email, permissions, roles } = response.data;
+
+        setUser({ email, permissions, roles });
       });
     }
   }, []);
@@ -59,6 +64,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         permissions,
         roles,
       });
+
+      if (api.defaults?.headers && api.defaults.headers.common) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      }
       Router.push("/dashboard");
     } catch (e) {
       console.log("error: ", e);
