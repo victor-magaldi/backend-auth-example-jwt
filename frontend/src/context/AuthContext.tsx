@@ -1,7 +1,7 @@
 import Router from "next/router";
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { api } from "../services/api";
-import { setCookie } from "nookies";
+import { setCookie, parseCookies } from "nookies";
 
 type User = {
   email: string;
@@ -26,6 +26,15 @@ export const AuthContext = createContext({} as AuthContextData);
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>();
   const isAutenticated = !!user;
+
+  useEffect(() => {
+    const { "nextauth.token": token } = parseCookies();
+    if (token) {
+      api.get("/me").then((r) => {
+        console.log("r", r);
+      });
+    }
+  }, []);
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
