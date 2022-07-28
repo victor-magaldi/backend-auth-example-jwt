@@ -1,6 +1,8 @@
-ya
+# Aplicação de Autenticação
 
-Após clonar esse projeto rodar tanto o back-end como o front-end seguindo os passos abaixo
+Essa aplicação foi feita para treinar o uso de autenticação JWT, tanto no back-end e front-end.
+
+Após clonar esse projeto rodar tanto o back-end como o front-end seguindo os passos abaixo:
 
 ## Back-end
 
