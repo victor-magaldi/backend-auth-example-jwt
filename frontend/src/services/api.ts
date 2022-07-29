@@ -1,4 +1,4 @@
-import axios, { HeadersDefaults } from "axios";
+import axios, { AxiosError, HeadersDefaults } from "axios";
 import { parseCookies } from "nookies";
 
 const { "nextauth.token": token } = parseCookies();
@@ -9,3 +9,21 @@ export const api = axios.create({
     Authorization: `Bearer ${token}`,
   },
 });
+
+api.interceptors.response.use(
+  (response) => {
+    // primeiro parametro , resposta sucesso
+    return response;
+  },
+  (error: AxiosError) => {
+    // primeiro parametro , resposta sucesso
+
+    if (error.response?.status === 401) {
+      if (error.response?.data?.code === "token.expired") {
+        //renovar token
+      } else {
+        // logout
+      }
+    }
+  }
+);
