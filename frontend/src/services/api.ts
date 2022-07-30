@@ -1,12 +1,12 @@
 import axios, { AxiosError, HeadersDefaults } from "axios";
-import { parseCookies } from "nookies";
+import { parseCookies, setCookie } from "nookies";
 
-const { "nextauth.token": token } = parseCookies();
+let cookies = parseCookies();
 
 export const api = axios.create({
   baseURL: "http://localhost:3333",
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${cookies?.["nextauth.token"]}`,
   },
 });
 
@@ -21,6 +21,33 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       if (error.response?.data?.code === "token.expired") {
         //renovar token
+        cookies = parseCookies();
+
+        const { "nextauth.refreshToken": refreshToken } = cookies;
+        api
+          .post("/refresh", {
+            refreshToken,
+          })
+          .then((response) => {
+            const { token } = response.data;
+
+            setCookie(undefined, "nextauth.token", token, {
+              maxAge: 30 * 60 * 24 * 30, // 30 days
+              path: "/",
+            });
+            setCookie(
+              undefined,
+              "nextauth.refreshToken",
+              response.data.refreshToken,
+              {
+                maxAge: 30 * 60 * 24 * 30, // 30 days
+                path: "/",
+              }
+            );
+            if (api.defaults?.headers && api.defaults.headers.common) {
+              api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            }
+          });
       } else {
         // logout
       }
