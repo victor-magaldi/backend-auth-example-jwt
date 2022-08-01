@@ -7,7 +7,7 @@ interface CommonHeaderProperties extends HeadersDefaults {
 
 let cookies = parseCookies();
 let isRefreshing = false;
-let failedRequestQueue = [];
+let failedRequestQueue: any = [];
 
 export const api = axios.create({
   baseURL: "http://localhost:3333",
@@ -59,6 +59,17 @@ api.interceptors.response.use(
                   "Authorization"
                 ] = `Bearer ${token}`;
               }
+
+              failedRequestQueue.forEach((request: any) =>
+                request.onSuccess(token)
+              );
+              failedRequestQueue = [];
+            })
+            .catch((err) => {
+              failedRequestQueue.forEach((request: any) =>
+                request.onFailure(err)
+              );
+              failedRequestQueue = [];
             })
             .finally(() => {
               isRefreshing = false;
