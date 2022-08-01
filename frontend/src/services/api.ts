@@ -1,7 +1,13 @@
-import axios, { AxiosError, HeadersDefaults } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, HeadersDefaults } from "axios";
 import { parseCookies, setCookie } from "nookies";
 
+interface CommonHeaderProperties extends HeadersDefaults {
+  Authorization: string;
+}
+
 let cookies = parseCookies();
+let isRefleshing = false;
+let failedRequestQueue = [];
 
 export const api = axios.create({
   baseURL: "http://localhost:3333",
@@ -24,30 +30,50 @@ api.interceptors.response.use(
         cookies = parseCookies();
 
         const { "nextauth.refreshToken": refreshToken } = cookies;
-        api
-          .post("/refresh", {
-            refreshToken,
-          })
-          .then((response) => {
-            const { token } = response.data;
+        const originalConfig = error.config as CommonHeaderProperties;
 
-            setCookie(undefined, "nextauth.token", token, {
-              maxAge: 30 * 60 * 24 * 30, // 30 days
-              path: "/",
-            });
-            setCookie(
-              undefined,
-              "nextauth.refreshToken",
-              response.data.refreshToken,
-              {
+        if (!isRefleshing) {
+          isRefleshing = true;
+          api
+            .post("/refresh", {
+              refreshToken,
+            })
+            .then((response) => {
+              const { token } = response.data;
+
+              setCookie(undefined, "nextauth.token", token, {
                 maxAge: 30 * 60 * 24 * 30, // 30 days
                 path: "/",
+              });
+              setCookie(
+                undefined,
+                "nextauth.refreshToken",
+                response.data.refreshToken,
+                {
+                  maxAge: 30 * 60 * 24 * 30, // 30 days
+                  path: "/",
+                }
+              );
+              if (api.defaults?.headers && api.defaults.headers.common) {
+                api.defaults.headers.common[
+                  "Authorization"
+                ] = `Bearer ${token}`;
               }
-            );
-            if (api.defaults?.headers && api.defaults.headers.common) {
-              api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            }
+            });
+        }
+
+        return new Promise((resolve, reject) => {
+          failedRequestQueue.push({
+            onSuccess: (token: string) => {
+              originalConfig["Authorization"] = `Bearer ${token}`;
+
+              resolve(api(originalConfig as AxiosRequestConfig<any>));
+            },
+            onFailure: (err: AxiosError) => {
+              reject(err);
+            },
           });
+        });
       } else {
         // logout
       }
