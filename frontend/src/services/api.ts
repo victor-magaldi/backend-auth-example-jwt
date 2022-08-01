@@ -6,7 +6,7 @@ interface CommonHeaderProperties extends HeadersDefaults {
 }
 
 let cookies = parseCookies();
-let isRefleshing = false;
+let isRefreshing = false;
 let failedRequestQueue = [];
 
 export const api = axios.create({
@@ -32,8 +32,8 @@ api.interceptors.response.use(
         const { "nextauth.refreshToken": refreshToken } = cookies;
         const originalConfig = error.config as CommonHeaderProperties;
 
-        if (!isRefleshing) {
-          isRefleshing = true;
+        if (!isRefreshing) {
+          isRefreshing = true;
           api
             .post("/refresh", {
               refreshToken,
@@ -59,6 +59,9 @@ api.interceptors.response.use(
                   "Authorization"
                 ] = `Bearer ${token}`;
               }
+            })
+            .finally(() => {
+              isRefreshing = false;
             });
         }
 
